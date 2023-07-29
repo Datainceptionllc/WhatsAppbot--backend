@@ -30,8 +30,9 @@ const getCustomerData = async () => {
             "SELECT * from customers",
             (err,result) =>{
                 if (err){
-                    reject(err);
                     console.log("Error fetching data from sql   ");
+                    reject(err);
+                    
                     //res.send({err: err})
                 }else{
                     console.log("Fetched Customer Data",result);
@@ -52,8 +53,9 @@ const getExpiredPolicyData = async () => {
             expiredPolicyQuery,
             (err,result) =>{
                 if (err){
-                    reject(err);
                     console.log("Error fetching data from sql");
+                    reject(err);
+                   
                     //res.send({err: err})
                 }else{
                     console.log("Fetched Expired Policy Data",result);

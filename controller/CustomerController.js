@@ -42,7 +42,7 @@ exports.getCustomerData = async (req, res) => {
 
 exports.getExpiredPolicyData = async (req, res) => {
     try{
-        const customerData = await customerModel.getCustomerData();
+        const customerData = await customerModel.getExpiredPolicyData();
         res.status(200).json(customerData);
     }catch (error){
         res.status(500).json({error: error.message});
