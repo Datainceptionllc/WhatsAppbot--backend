@@ -4,7 +4,7 @@
   "description": "Insurance App server",
   "main": "index.js",
   "scripts": {
-    "test": "None"
+    "start": "node index.js"
   },
   "author": "Rishab Parekh",
   "license": "ISC",
