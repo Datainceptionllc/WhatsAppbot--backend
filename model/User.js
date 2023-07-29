@@ -10,7 +10,7 @@ const checkLogin = (email, password) => {
             (err,result) =>{
                 if (err){
                     reject(err);
-                    console.log("SOmething is wrong");
+                    console.log("SOmething is wrong", err);
                     //res.send({err: err})
                 }
                 if (result.length === 1){
