@@ -30,6 +30,28 @@ const checkLogin = (email, password) => {
 };
 
 
+const registerUser = (email, password, role) => {
+    console.log("Inside Model:", role, email);
+
+    return new Promise((resolve, reject) => {
+        registerUserQuery = "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
+
+        db.query(
+            registerUserQuery, [email, password, role],
+            (err, result) =>{
+                if (err){
+                    console.log("SOmething is wrong", err);
+                    reject(err);
+                }else{
+                    console.log("User has been reigstered successfully !!!");
+                    resolve(result);
+                }
+            });
+    });
+};
+
+
 module.exports = {
-    checkLogin
+    checkLogin,
+    registerUser,
   };

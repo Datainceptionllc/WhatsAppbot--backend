@@ -15,6 +15,21 @@ exports.checkLogin = async(req, res) => {
 };
 
 
+exports.registerUser = async(req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const role = req.body.role;
+    console.log('Email and Pass', email, password, role);
+    const userRegistered = await userModel.registerUser(email, password, role);
+    console.log('UserRegisteredDetails', userRegistered);
+    if(!userRegistered) {
+        res.status(401).json({error: 'Issue with adding the user'});
+    }else{
+        res.status(200).json({ message: 'Registered successful', userRegistered });
+    }
+};
+
+
   
   
   
