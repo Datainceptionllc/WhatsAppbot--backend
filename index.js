@@ -1,23 +1,20 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const userRoute = require('./router/api/userRoute');
 const customerRoute = require('./router/api/customerRoute');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-
 
 app.use(userRoute);
 app.use(customerRoute);
 
-app.listen(4000, ()=>{
-    console.log("running server");
+app.listen(4000, () => {
+  console.log('running server');
 });
-
-
 
 // app.post("/login", (req, res) =>{
 //     const email = req.body.email;
@@ -41,8 +38,6 @@ app.listen(4000, ()=>{
 //         });
 // });
 
-
-
 // app.get('/customerData', (req, res) => {
 //     const query = 'SELECT * from customers';
 
@@ -55,7 +50,6 @@ app.listen(4000, ()=>{
 //         res.json(results);
 //     });
 // });
-
 
 // app.post('/upload', upload.single('file'), (req, res) => {
 //     console.log("File Data:"+req.file);
@@ -88,9 +82,6 @@ app.listen(4000, ()=>{
 //     }
 //   });
 
-
-
-
 //   app.get('/expiredPolicy', (req, res) => {
 //     const query =  `
 //     SELECT * FROM customers
@@ -108,66 +99,67 @@ app.listen(4000, ()=>{
 //     });
 // });
 
-app.post("/sendNotification", (req, res) =>{
-    console.log(req.body.customerData.insured_name);
-    // db.query(
-    //     "SELECT * from users WHERE email = ? AND password = ?",
-    //     [email, password],
-    //     (err,result) =>{
-    //         if (err){
-    //             console.log("SOmething is wrong");
-    //             res.send({err: err})
-    //         }
-    //         if (result.length === 1){
-    //             console.log(result);
-    //             res.send(result);
-    //         }else{
-    //             console.log("Password Wrong");
-    //             res.send({message: "Wrong username/ password... Please try again"});
-    //         }
-    //     });
+app.post('/sendNotification', (req, res) => {
+  console.log(req.body.customerData.insured_name);
+  // db.query(
+  //     "SELECT * from users WHERE email = ? AND password = ?",
+  //     [email, password],
+  //     (err,result) =>{
+  //         if (err){
+  //             console.log("SOmething is wrong");
+  //             res.send({err: err})
+  //         }
+  //         if (result.length === 1){
+  //             console.log(result);
+  //             res.send(result);
+  //         }else{
+  //             console.log("Password Wrong");
+  //             res.send({message: "Wrong username/ password... Please try again"});
+  //         }
+  //     });
 
-        const axios = require('axios');
-        let data = JSON.stringify({
-        "messaging_product": "whatsapp",
-        "to": req.body.customerData.phone_number,
-        "type": "template",
-        "template": {
-            "name": "tempalte1",
-            "language": {
-            "code": "en"
-            },
-            "components": [
+  const axios = require('axios');
+  let data = JSON.stringify({
+    messaging_product: 'whatsapp',
+    to: req.body.customerData.phone_number,
+    type: 'template',
+    template: {
+      name: 'tempalte1',
+      language: {
+        code: 'en',
+      },
+      components: [
+        {
+          type: 'header',
+          parameters: [
             {
-                "type": "header",
-                "parameters": [
-                {
-                    "type": "text",
-                    "text": req.body.customerData.insured_name
-                }
-                ]
-            }
-            ]
-        }
-        });
-
-        let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://graph.facebook.com/v17.0/103303639487426/messages',
-        headers: { 
-            'Authorization': 'Bearer EAALkV5qUSzEBAF7jZC6V0NzMdbuBQO3FcbcTlZAJZAzzhScm9J7FSOcqCYwZBX75VhaEhPkG3l34lIJtjtdyOZCzNOOTsyXCB7REyNnFGjzMIlTq1ywc48EA0EStuKZCT0dWPr64AWgdAG9Q5Lup7N7GoEi95nEsviI2ZCEz8NlyZC5hVvpz1i7tOlY6L5Bcf0aDG06gS39GgQZDZD', 
-            'Content-Type': 'application/json'
+              type: 'text',
+              text: req.body.customerData.insured_name,
+            },
+          ],
         },
-        data : data
-        };
+      ],
+    },
+  });
 
-        axios.request(config)
-        .then((response) => {
-        console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-        console.log(error);
-        });
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://graph.facebook.com/v17.0/103303639487426/messages',
+    headers: {
+      Authorization:
+        'Bearer EAALkV5qUSzEBAF7jZC6V0NzMdbuBQO3FcbcTlZAJZAzzhScm9J7FSOcqCYwZBX75VhaEhPkG3l34lIJtjtdyOZCzNOOTsyXCB7REyNnFGjzMIlTq1ywc48EA0EStuKZCT0dWPr64AWgdAG9Q5Lup7N7GoEi95nEsviI2ZCEz8NlyZC5hVvpz1i7tOlY6L5Bcf0aDG06gS39GgQZDZD',
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
 
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
