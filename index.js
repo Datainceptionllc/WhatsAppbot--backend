@@ -5,6 +5,7 @@ const app = express();
 const userRoute = require('./router/api/userRoute');
 const customerRoute = require('./router/api/customerRoute');
 const whatsAppRoute = require('./router/api/whatsAppRoute');
+require('dotenv').config();
 
 app.get('/', (req, res) => {
   res.status(200).send('hello this is webhook setup');
@@ -17,7 +18,7 @@ app.use(userRoute);
 app.use(customerRoute);
 app.use(whatsAppRoute);
 
-app.listen(process.env, () => {
+app.listen(process.env.PORT, () => {
   console.log('running server');
 });
 
