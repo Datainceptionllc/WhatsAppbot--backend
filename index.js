@@ -6,6 +6,9 @@ const userRoute = require('./router/api/userRoute');
 const customerRoute = require('./router/api/customerRoute');
 const whatsAppRoute = require('./router/api/whatsAppRoute');
 
+app.get('/', (req, res) => {
+  res.status(200).send('hello this is webhook setup');
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
@@ -14,7 +17,7 @@ app.use(userRoute);
 app.use(customerRoute);
 app.use(whatsAppRoute);
 
-app.listen(4000, () => {
+app.listen(process.env, () => {
   console.log('running server');
 });
 
