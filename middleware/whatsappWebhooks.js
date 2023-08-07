@@ -64,3 +64,62 @@ exports.receiveReplyHook = (req, res) => {
     }
   }
 };
+
+exports.sendTemplateToCustomers = (req, res) => {
+  const axios = require('axios');
+  let data = JSON.stringify({
+    messaging_product: 'whatsapp',
+    to: req.body.customerData.phone_number,
+    type: 'template',
+    template: {
+      name: 'renewal_template',
+      language: {
+        code: 'en_US',
+      },
+      components: [
+        {
+          type: 'header',
+          parameters: [
+            {
+              type: 'text',
+              text: req.body.customerData.insured_name,
+            },
+          ],
+        },
+        {
+          type: 'body',
+          parameters: [
+            {
+              type: 'text',
+              text: req.body.customerData.engine_number,
+            },
+            {
+              type: 'text',
+              text: req.body.customerData.end_date,
+            },
+          ],
+        },
+      ],
+    },
+  });
+
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+    headers: {
+      Authorization: 'Bearer' + ' ' + process.env.TOKEN,
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

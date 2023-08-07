@@ -101,80 +101,80 @@ app.listen(4000, () => {
 //     });
 // });
 
-app.post('/sendNotification', (req, res) => {
-  console.log(req.body.customerData.insured_name);
-  // db.query(
-  //     "SELECT * from users WHERE email = ? AND password = ?",
-  //     [email, password],
-  //     (err,result) =>{
-  //         if (err){
-  //             console.log("SOmething is wrong");
-  //             res.send({err: err})
-  //         }
-  //         if (result.length === 1){
-  //             console.log(result);
-  //             res.send(result);
-  //         }else{
-  //             console.log("Password Wrong");
-  //             res.send({message: "Wrong username/ password... Please try again"});
-  //         }
-  //     });
+// app.post('/sendNotification', (req, res) => {
+//   console.log(req.body.customerData.insured_name);
+//   // db.query(
+//   //     "SELECT * from users WHERE email = ? AND password = ?",
+//   //     [email, password],
+//   //     (err,result) =>{
+//   //         if (err){
+//   //             console.log("SOmething is wrong");
+//   //             res.send({err: err})
+//   //         }
+//   //         if (result.length === 1){
+//   //             console.log(result);
+//   //             res.send(result);
+//   //         }else{
+//   //             console.log("Password Wrong");
+//   //             res.send({message: "Wrong username/ password... Please try again"});
+//   //         }
+//   //     });
 
-  const axios = require('axios');
-  let data = JSON.stringify({
-    messaging_product: 'whatsapp',
-    to: req.body.customerData.phone_number,
-    type: 'template',
-    template: {
-      name: 'renewal_template',
-      language: {
-        code: 'en_US',
-      },
-      components: [
-        {
-          type: 'header',
-          parameters: [
-            {
-              type: 'text',
-              text: req.body.customerData.insured_name,
-            },
-          ],
-        },
-        {
-          type: 'body',
-          parameters: [
-            {
-              type: 'text',
-              text: req.body.customerData.engine_number,
-            },
-            {
-              type: 'text',
-              text: req.body.customerData.end_date,
-            },
-          ],
-        },
-      ],
-    },
-  });
+//   const axios = require('axios');
+//   let data = JSON.stringify({
+//     messaging_product: 'whatsapp',
+//     to: req.body.customerData.phone_number,
+//     type: 'template',
+//     template: {
+//       name: 'renewal_template',
+//       language: {
+//         code: 'en_US',
+//       },
+//       components: [
+//         {
+//           type: 'header',
+//           parameters: [
+//             {
+//               type: 'text',
+//               text: req.body.customerData.insured_name,
+//             },
+//           ],
+//         },
+//         {
+//           type: 'body',
+//           parameters: [
+//             {
+//               type: 'text',
+//               text: req.body.customerData.engine_number,
+//             },
+//             {
+//               type: 'text',
+//               text: req.body.customerData.end_date,
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//   });
 
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
-    headers: {
-      Authorization:
-        'Bearer EAALkV5qUSzEBOxLeETLYxi60JQDamB4gDnNmhREMzN2S7mOzGQBtG7QM9V1YZAHJ0ukVWZAhMPtMdkyJGDhuB7mefFbyjHZA2giRDtWLtR1rVUS2QPJZC5WdHOZB06oNcT4QL1LIZCiYCc8e8KRZAcPIEygwLbjwnZCSBANxXAJlCtPbwYpjfRgVH4aeBWCHZBSwQvbozGjlp4qumMaau1tAGdKZAo9GBqBllaxjgeU3QZD',
-      'Content-Type': 'application/json',
-    },
-    data: data,
-  };
+//   let config = {
+//     method: 'post',
+//     maxBodyLength: Infinity,
+//     url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+//     headers: {
+//       Authorization:
+//         'Bearer EAALkV5qUSzEBOxLeETLYxi60JQDamB4gDnNmhREMzN2S7mOzGQBtG7QM9V1YZAHJ0ukVWZAhMPtMdkyJGDhuB7mefFbyjHZA2giRDtWLtR1rVUS2QPJZC5WdHOZB06oNcT4QL1LIZCiYCc8e8KRZAcPIEygwLbjwnZCSBANxXAJlCtPbwYpjfRgVH4aeBWCHZBSwQvbozGjlp4qumMaau1tAGdKZAo9GBqBllaxjgeU3QZD',
+//       'Content-Type': 'application/json',
+//     },
+//     data: data,
+//   };
 
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
+//   axios
+//     .request(config)
+//     .then((response) => {
+//       console.log(JSON.stringify(response.data));
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//     });
+// });
