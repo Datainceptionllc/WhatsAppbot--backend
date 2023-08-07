@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const userRoute = require('./router/api/userRoute');
 const customerRoute = require('./router/api/customerRoute');
+const whatsAppRoute = require('./router/api/whatsAppRoute');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -11,6 +12,7 @@ app.use(cors());
 
 app.use(userRoute);
 app.use(customerRoute);
+app.use(whatsAppRoute);
 
 app.listen(4000, () => {
   console.log('running server');
@@ -124,9 +126,9 @@ app.post('/sendNotification', (req, res) => {
     to: req.body.customerData.phone_number,
     type: 'template',
     template: {
-      name: 'tempalte1',
+      name: 'renewal_template',
       language: {
-        code: 'en',
+        code: 'en_US',
       },
       components: [
         {
@@ -138,6 +140,19 @@ app.post('/sendNotification', (req, res) => {
             },
           ],
         },
+        {
+          type: 'body',
+          parameters: [
+            {
+              type: 'text',
+              text: req.body.customerData.engine_number,
+            },
+            {
+              type: 'text',
+              text: req.body.customerData.end_date,
+            },
+          ],
+        },
       ],
     },
   });
@@ -145,10 +160,10 @@ app.post('/sendNotification', (req, res) => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://graph.facebook.com/v17.0/103303639487426/messages',
+    url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
     headers: {
       Authorization:
-        'Bearer EAALkV5qUSzEBAF7jZC6V0NzMdbuBQO3FcbcTlZAJZAzzhScm9J7FSOcqCYwZBX75VhaEhPkG3l34lIJtjtdyOZCzNOOTsyXCB7REyNnFGjzMIlTq1ywc48EA0EStuKZCT0dWPr64AWgdAG9Q5Lup7N7GoEi95nEsviI2ZCEz8NlyZC5hVvpz1i7tOlY6L5Bcf0aDG06gS39GgQZDZD',
+        'Bearer EAALkV5qUSzEBOxLeETLYxi60JQDamB4gDnNmhREMzN2S7mOzGQBtG7QM9V1YZAHJ0ukVWZAhMPtMdkyJGDhuB7mefFbyjHZA2giRDtWLtR1rVUS2QPJZC5WdHOZB06oNcT4QL1LIZCiYCc8e8KRZAcPIEygwLbjwnZCSBANxXAJlCtPbwYpjfRgVH4aeBWCHZBSwQvbozGjlp4qumMaau1tAGdKZAo9GBqBllaxjgeU3QZD',
       'Content-Type': 'application/json',
     },
     data: data,
