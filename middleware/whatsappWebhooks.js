@@ -1,4 +1,5 @@
 require('dotenv').config();
+const axios = require('axios');
 const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN; //prasath_token
 
@@ -66,7 +67,6 @@ exports.receiveReplyHook = (req, res) => {
 };
 
 exports.sendTemplateToCustomers = (req, res) => {
-  const axios = require('axios');
   let data = JSON.stringify({
     messaging_product: 'whatsapp',
     to: req.body.customerData.phone_number,
