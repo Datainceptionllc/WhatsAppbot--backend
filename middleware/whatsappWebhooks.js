@@ -3,11 +3,11 @@ const axios = require('axios');
 const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN; //prasath_token
 
-const thankYouMessgae = (phone_number_id) => {
+const thankYouMessgae = (from) => {
   console.log('Inside thank you message');
   let data = JSON.stringify({
     messaging_product: 'whatsapp',
-    to: phone_number_id,
+    to: from,
     type: 'template',
     template: {
       name: 'thank_you_template',
@@ -77,7 +77,7 @@ exports.receiveReplyHook = (req, res) => {
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
       if (msg_body === 'Yes') {
-        thankYouMessgae(phon_no_id);
+        thankYouMessgae(from);
       }
     }
   }
