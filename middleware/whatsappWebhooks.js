@@ -23,8 +23,7 @@ const thankYouMessgae = (from) => {
     url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
     headers: {
       'Content-Type': 'application/json',
-      Authorization:
-        'Bearer EAALkV5qUSzEBOxLeETLYxi60JQDamB4gDnNmhREMzN2S7mOzGQBtG7QM9V1YZAHJ0ukVWZAhMPtMdkyJGDhuB7mefFbyjHZA2giRDtWLtR1rVUS2QPJZC5WdHOZB06oNcT4QL1LIZCiYCc8e8KRZAcPIEygwLbjwnZCSBANxXAJlCtPbwYpjfRgVH4aeBWCHZBSwQvbozGjlp4qumMaau1tAGdKZAo9GBqBllaxjgeU3QZD',
+      Authorization: 'Bearer' + ' ' + process.env.TOKEN,
     },
     data: data,
   };
@@ -72,15 +71,12 @@ exports.receiveReplyHook = (req, res) => {
       let from = body_param.entry[0].changes[0].value.messages[0].from;
       let msg_body =
         body_param.entry[0].changes[0].value.messages[0].button.text;
-      let customer_phone_number =
-        body_param.entry[0].changes[0].value.contacts[0].wa_id;
 
       console.log('phone number ' + phon_no_id);
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
-      console.log('customer phone number param ' + customer_phone_number);
       if (msg_body === 'Yes') {
-        thankYouMessgae(customer_phone_number);
+        thankYouMessgae(from);
       }
     }
   }
