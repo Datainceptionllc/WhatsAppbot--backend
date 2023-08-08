@@ -40,29 +40,39 @@ exports.receiveReplyHook = (req, res) => {
       console.log('phone number ' + phon_no_id);
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
-
-      axios({
-        method: 'POST',
-        url:
-          'https://graph.facebook.com/v17.0/' +
-          phon_no_id +
-          '/messages?access_token=' +
-          token,
-        data: {
+      if (msg_body === 'Yes') {
+        let data = JSON.stringify({
           messaging_product: 'whatsapp',
-          to: from,
-          text: {
-            body: "Hi.. I'm Rishab, your message is " + msg_body,
+          to: phon_no_id,
+          type: 'template',
+          template: {
+            name: 'thank_you_template',
+            language: {
+              code: 'en_US',
+            },
           },
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+        });
 
-      res.sendStatus(200);
-    } else {
-      res.sendStatus(404);
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+          headers: {
+            Authorization: 'Bearer' + ' ' + process.env.TOKEN,
+            'Content-Type': 'application/json',
+          },
+          data: data,
+        };
+
+        axios
+          .request(config)
+          .then((response) => {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
   }
 };
