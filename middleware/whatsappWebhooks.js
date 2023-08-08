@@ -3,6 +3,42 @@ const axios = require('axios');
 const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN; //prasath_token
 
+const thankYouMessgae = (phone_number_id) => {
+  console.log('Inside thank you message');
+  let data = JSON.stringify({
+    messaging_product: 'whatsapp',
+    to: phone_number_id,
+    type: 'template',
+    template: {
+      name: 'thank_you_template',
+      language: {
+        code: 'en_US',
+      },
+    },
+  });
+
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization:
+        'Bearer EAALkV5qUSzEBOxLeETLYxi60JQDamB4gDnNmhREMzN2S7mOzGQBtG7QM9V1YZAHJ0ukVWZAhMPtMdkyJGDhuB7mefFbyjHZA2giRDtWLtR1rVUS2QPJZC5WdHOZB06oNcT4QL1LIZCiYCc8e8KRZAcPIEygwLbjwnZCSBANxXAJlCtPbwYpjfRgVH4aeBWCHZBSwQvbozGjlp4qumMaau1tAGdKZAo9GBqBllaxjgeU3QZD',
+    },
+    data: data,
+  };
+
+  axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 exports.webhookVerify = (req, res) => {
   let mode = req.query['hub.mode'];
   let challange = req.query['hub.challenge'];
@@ -41,37 +77,7 @@ exports.receiveReplyHook = (req, res) => {
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
       if (msg_body === 'Yes') {
-        let data = JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: phon_no_id,
-          type: 'template',
-          template: {
-            name: 'thank_you_template',
-            language: {
-              code: 'en_US',
-            },
-          },
-        });
-
-        let config = {
-          method: 'post',
-          maxBodyLength: Infinity,
-          url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
-          headers: {
-            Authorization: 'Bearer' + ' ' + process.env.TOKEN,
-            'Content-Type': 'application/json',
-          },
-          data: data,
-        };
-
-        axios
-          .request(config)
-          .then((response) => {
-            console.log(JSON.stringify(response.data));
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        thankYouMessgae(phon_no_id);
       }
     }
   }
