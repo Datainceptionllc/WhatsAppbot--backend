@@ -72,12 +72,15 @@ exports.receiveReplyHook = (req, res) => {
       let from = body_param.entry[0].changes[0].value.messages[0].from;
       let msg_body =
         body_param.entry[0].changes[0].value.messages[0].button.text;
+      let customer_phone_number =
+        body_param.entry[0].changes[0].value.contacts[0].wa_id;
 
       console.log('phone number ' + phon_no_id);
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
+      console.log('customer phone number param ' + customer_phone_number);
       if (msg_body === 'Yes') {
-        thankYouMessgae(from);
+        thankYouMessgae(customer_phone_number);
       }
     }
   }
