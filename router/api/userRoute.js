@@ -8,6 +8,8 @@ router.post('/registerUser', userController.registerUser);
 
 router.get('/adminData', userController.fetchAdminData);
 router.get('/managerData', userController.fetchManagerData);
+router.get('/getProfileData', userController.getUserData);
+router.post('/updateProfileDetails', userController.updateProfileDetails);
 
 router.delete('/deleteUser/:id', userController.deleteUser);
 

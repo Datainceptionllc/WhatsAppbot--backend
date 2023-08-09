@@ -22,7 +22,7 @@ const checkLogin = (email, password) => {
 
           // res.send({message: "Wrong username/ password... Please try again"});
         }
-      },
+      }
     );
   });
 };
@@ -78,7 +78,7 @@ const fetchManagerData = async () => {
           resolve(result);
           // res.send({message: "Wrong username/ password... Please try again"});
         }
-      },
+      }
     );
   });
 };
@@ -96,10 +96,57 @@ const deleteUser = async (id) => {
     });
   });
 };
+
+const getUserData = async (email) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * from users WHERE email=? ', [email], (err, result) => {
+      if (err) {
+        console.log('Error fetching data from sql   ');
+        reject(err);
+      } else {
+        console.log('User Found Successfully', result);
+        resolve(result);
+      }
+    });
+  });
+};
+
+const updateProfileDetails = async (
+  email,
+  firstName,
+  lastName,
+  address,
+  phoneNumber,
+  state,
+  city,
+  zipCode
+) => {
+  return new Promise((resolve, reject) => {
+    const updateQuery =
+      'UPDATE users SET firstName=?, lastName=?, address=?, phoneNumber=?, state=?, city=?, zipCode=? WHERE email=?';
+
+    db.query(
+      updateQuery,
+      [firstName, lastName, address, phoneNumber, state, city, zipCode, email],
+      (err, result) => {
+        if (err) {
+          console.log('Error updating data to sql', err);
+          reject(err);
+        } else {
+          console.log('Updated the details Successfully', result);
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   checkLogin,
   registerUser,
   fetchAdminData,
   fetchManagerData,
   deleteUser,
+  getUserData,
+  updateProfileDetails
 };
