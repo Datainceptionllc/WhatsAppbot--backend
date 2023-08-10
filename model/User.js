@@ -1,9 +1,8 @@
 const db = require('../config/connection');
 
-console.log('Database connection:', db);
-
 const checkLogin = (email, password) => {
   console.log('Email', 'Password', email, password);
+  console.log('Database connection:', db);
   return new Promise((resolve, reject) => {
     db.query(
       'SELECT * from users WHERE email = ? AND password = ?',
