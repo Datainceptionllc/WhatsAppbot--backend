@@ -10,9 +10,24 @@ require('dotenv').config();
 app.get('/', (req, res) => {
   res.status(200).send('hello this is webhook setup');
 });
+
+const allowedOrigins = [
+  'http://localhost:3000' // Assuming this is your local React development server
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(userRoute);
 app.use(customerRoute);
