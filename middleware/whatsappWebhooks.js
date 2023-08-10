@@ -39,82 +39,82 @@ const thankYouMessgae = (from) => {
     });
 };
 
-const notifyAgent = async (from) => {
-  const customerDataFetched = null;
-  try {
-    customerDataFetched = await customerModel.getPolicyNumber();
-    console.log('Inside Customer Data');
-    res.status(200).json(customerDataFetched);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ error: error.message });
-  }
-  totalData = customerDataFetched.length;
+// const notifyAgent = async (from) => {
+//   const customerDataFetched = null;
+//   try {
+//     customerDataFetched = await customerModel.getPolicyNumber();
+//     console.log('Inside Customer Data');
+//     res.status(200).json(customerDataFetched);
+//   } catch (error) {
+//     console.log(error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+//   totalData = customerDataFetched.length;
 
-  const sendNotificationToAgent = (customerData) => {
-    console.log('Inside thank you message');
-    let data = JSON.stringify({
-      messaging_product: 'whatsapp',
-      to: customerData.Executive_Number,
-      type: 'template',
-      template: {
-        name: 'workers_template',
-        language: {
-          code: 'en_US'
-        },
-        components: [
-          {
-            type: 'header',
-            parameters: [
-              {
-                type: 'text',
-                text: customerData.Executive_Name
-              }
-            ]
-          },
-          {
-            type: 'body',
-            parameters: [
-              {
-                type: 'text',
-                text: customerData.policy_number
-              },
-              {
-                type: 'text',
-                text: from
-              }
-            ]
-          }
-        ]
-      }
-    });
+//   const sendNotificationToAgent = (customerData) => {
+//     console.log('Inside thank you message');
+//     let data = JSON.stringify({
+//       messaging_product: 'whatsapp',
+//       to: customerData.Executive_Number,
+//       type: 'template',
+//       template: {
+//         name: 'workers_template',
+//         language: {
+//           code: 'en_US'
+//         },
+//         components: [
+//           {
+//             type: 'header',
+//             parameters: [
+//               {
+//                 type: 'text',
+//                 text: customerData.Executive_Name
+//               }
+//             ]
+//           },
+//           {
+//             type: 'body',
+//             parameters: [
+//               {
+//                 type: 'text',
+//                 text: customerData.policy_number
+//               },
+//               {
+//                 type: 'text',
+//                 text: from
+//               }
+//             ]
+//           }
+//         ]
+//       }
+//     });
 
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer' + ' ' + process.env.TOKEN
-      },
-      data: data
-    };
+//     let config = {
+//       method: 'post',
+//       maxBodyLength: Infinity,
+//       url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: 'Bearer' + ' ' + process.env.TOKEN
+//       },
+//       data: data
+//     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  if (totalData > 0) {
-    for (let i = 0; i < totalData; i++) {
-      sendNotificationToAgent(customerDataFetched[i]);
-    }
-  }
-};
+//     axios
+//       .request(config)
+//       .then((response) => {
+//         console.log(JSON.stringify(response.data));
+//       })
+//       .catch((error) => {
+//         console.log(error);
+//       });
+//   };
+//   if (totalData > 0) {
+//     for (let i = 0; i < totalData; i++) {
+//       sendNotificationToAgent(customerDataFetched[i]);
+//     }
+//   }
+// };
 
 exports.webhookVerify = (req, res) => {
   let mode = req.query['hub.mode'];
@@ -155,7 +155,7 @@ exports.receiveReplyHook = (req, res) => {
       console.log('boady param ' + msg_body);
       if (msg_body === 'Yes') {
         thankYouMessgae(from);
-        notifyAgent(from);
+        // notifyAgent(from);
       }
     }
   }
