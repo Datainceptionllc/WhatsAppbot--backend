@@ -9,4 +9,9 @@ router.post('/webhook', whatappWebhooks.receiveReplyHook);
 
 router.post('/sendNotification', whatappWebhooks.sendTemplateToCustomers);
 
+router.post(
+  '/sendNotificationToAll',
+  whatappWebhooks.sendTemplateToAllCustomers
+);
+
 module.exports = router;
