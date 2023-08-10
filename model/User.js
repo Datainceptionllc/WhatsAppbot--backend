@@ -1,5 +1,7 @@
 const db = require('../config/connection');
 
+console.log('Database connection:', db);
+
 const checkLogin = (email, password) => {
   console.log('Email', 'Password', email, password);
   return new Promise((resolve, reject) => {
