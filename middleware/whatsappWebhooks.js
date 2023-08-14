@@ -2,7 +2,7 @@ require('dotenv').config();
 const axios = require('axios');
 const token = process.env.TOKEN;
 const mytoken = process.env.MYTOKEN; //prasath_token
-const customerModel = require('../model/Customer');
+const conversationTransactionData = require('../model/ConversationTransaction');
 
 const thankYouMessgae = (from) => {
   console.log('Inside thank you message');
@@ -39,82 +39,82 @@ const thankYouMessgae = (from) => {
     });
 };
 
-// const notifyAgent = async (from) => {
-//   const customerDataFetched = null;
-//   try {
-//     customerDataFetched = await customerModel.getPolicyNumber();
-//     console.log('Inside Customer Data');
-//     res.status(200).json(customerDataFetched);
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).json({ error: error.message });
-//   }
-//   totalData = customerDataFetched.length;
+const notifyAgent = async (customerDataFetched) => {
+  //const customerDataFetched = null;
 
-//   const sendNotificationToAgent = (customerData) => {
-//     console.log('Inside thank you message');
-//     let data = JSON.stringify({
-//       messaging_product: 'whatsapp',
-//       to: customerData.Executive_Number,
-//       type: 'template',
-//       template: {
-//         name: 'workers_template',
-//         language: {
-//           code: 'en_US'
-//         },
-//         components: [
-//           {
-//             type: 'header',
-//             parameters: [
-//               {
-//                 type: 'text',
-//                 text: customerData.Executive_Name
-//               }
-//             ]
-//           },
-//           {
-//             type: 'body',
-//             parameters: [
-//               {
-//                 type: 'text',
-//                 text: customerData.policy_number
-//               },
-//               {
-//                 type: 'text',
-//                 text: from
-//               }
-//             ]
-//           }
-//         ]
-//       }
-//     });
+  //customerDataFetched = await conversationTransactionData.getPolicyNumber();
+  console.log('Inside Customer Data');
+  totalData = customerDataFetched.length;
 
-//     let config = {
-//       method: 'post',
-//       maxBodyLength: Infinity,
-//       url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: 'Bearer' + ' ' + process.env.TOKEN
-//       },
-//       data: data
-//     };
+  const sendNotificationToAgent = async (customerData) => {
+    console.log('Inside thank you message');
+    let data = JSON.stringify({
+      messaging_product: 'whatsapp',
+      to: customerData.Executive_Number,
+      type: 'template',
+      template: {
+        name: 'workers_template',
+        language: {
+          code: 'en_US'
+        },
+        components: [
+          {
+            type: 'header',
+            parameters: [
+              {
+                type: 'text',
+                text: customerData.Executive_Name
+              }
+            ]
+          },
+          {
+            type: 'body',
+            parameters: [
+              {
+                type: 'text',
+                text: customerData.policy_number
+              },
+              {
+                type: 'text',
+                text: from
+              }
+            ]
+          }
+        ]
+      }
+    });
 
-//     axios
-//       .request(config)
-//       .then((response) => {
-//         console.log(JSON.stringify(response.data));
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   };
-//   if (totalData > 0) {
-//     for (let i = 0; i < totalData; i++) {
-//       sendNotificationToAgent(customerDataFetched[i]);
-//     }
-//   }
-// };
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://graph.facebook.com/v17.0/103833739477467/messages',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer' + ' ' + process.env.TOKEN
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+
+      // Update customer data status
+      const updateCustomerData =
+        await conversationTransactionData.updateCustomerRenewalDataStatus(
+          customerData.policy_number
+        );
+      console.log('Updating Customer Data:', updateCustomerData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if (totalData > 0) {
+    for (let i = 0; i < totalData; i++) {
+      await sendNotificationToAgent(customerDataFetched[i]);
+    }
+  }
+};
 
 exports.webhookVerify = (req, res) => {
   let mode = req.query['hub.mode'];
@@ -130,7 +130,7 @@ exports.webhookVerify = (req, res) => {
   }
 };
 
-exports.receiveReplyHook = (req, res) => {
+exports.receiveReplyHook = async (req, res) => {
   console.log('Datainception webhook:', req.body);
   let body_param = req.body;
 
@@ -154,14 +154,30 @@ exports.receiveReplyHook = (req, res) => {
       console.log('from ' + from);
       console.log('boady param ' + msg_body);
       if (msg_body === 'Yes') {
-        thankYouMessgae(from);
-        // notifyAgent(from);
+        const checkMessageStatus = null;
+        const customerDataFetched = null;
+        try {
+          customerDataFetched =
+            await conversationTransactionData.getMessageStatusWithCustomerDetails(
+              from
+            );
+          console.log('Inside Customer Data');
+          res.status(200).json(customerDataFetched);
+        } catch (error) {
+          console.log(error.message);
+          res.status(500).json({ error: error.message });
+        }
+        checkMessageStatus = customerDataFetched.renewal_requested === 'No';
+        if (checkMessageStatus) {
+          thankYouMessgae(from);
+          notifyAgent(customerDataFetched);
+        }
       }
     }
   }
 };
 
-exports.sendTemplateToCustomers = (req, res) => {
+exports.sendTemplateToCustomers = async (req, res) => {
   let data = JSON.stringify({
     messaging_product: 'whatsapp',
     to: req.body.customerData.phone_number,
@@ -209,23 +225,28 @@ exports.sendTemplateToCustomers = (req, res) => {
     data: data
   };
 
-  axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  try {
+    const response = await axios.request(config);
+    console.log(JSON.stringify(response.data));
+
+    // Update customer data status
+    const updateCustomerData =
+      await conversationTransactionData.updateCustomerDataStatus(
+        req.body.customerData.policy_number
+      );
+    console.log('Updating Customer Data:', updateCustomerData);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.sendTemplateToAllCustomers = (req, res) => {
+exports.sendTemplateToAllCustomers = async (req, res) => {
   const allCustomerData = req.body.allExpiredPolicyData;
   const totalCustomers = allCustomerData.length;
 
   console.log('All the data:', allCustomerData, totalCustomers);
 
-  const sendNotification = (customerData) => {
+  const sendNotification = async (customerData) => {
     const data = JSON.stringify({
       messaging_product: 'whatsapp',
       to: customerData.phone_number,
@@ -273,19 +294,24 @@ exports.sendTemplateToAllCustomers = (req, res) => {
       data: data
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+
+      // Update customer data status
+      const updateCustomerData =
+        await conversationTransactionData.updateCustomerDataStatus(
+          customerData.policy_number
+        );
+      console.log('Updating Customer Data:', updateCustomerData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Loop through each customer and send notifications
   for (let i = 0; i < totalCustomers; i++) {
-    sendNotification(allCustomerData[i]);
+    await sendNotification(allCustomerData[i]);
   }
 
   res.status(200).json({ message: 'Notifications sent to all customers.' });
